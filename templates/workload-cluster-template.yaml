@@ -1,0 +1,37 @@
+apiVersion: run.tanzu.vmware.com/v1alpha2
+kind: TanzuKubernetesCluster
+metadata:
+  name: {{ workload_cluster }}
+  namespace: {{ vsphere_namespace }}
+spec:
+  topology:
+    controlPlane:
+      replicas: {{ control_plane_count }}
+      vmClass: {{ cp_vmclass_size }}
+      storageClass: {{ storage_class }}
+      tkr:  
+        reference:
+          name: {{ tkr }}
+    nodePools:
+    - name: {{ workload_cluster }}-np1
+      replicas: {{ worker_node_count }}
+      vmClass: {{ worker_vmclass_size }}
+      storageClass: {{ storage_class }}
+      volumes:
+        - name: containerd
+          mountPath: /var/lib/containerd
+          capacity:
+            storage: {{ ctrd_disksize }}
+        - name: kubelet
+          mountPath: /var/lib/kubelet
+          capacity:
+            storage: {{ kubelet_disksize }}  
+      tkr:  
+        reference:
+          name: {{ tkr }}
+  settings:
+    storage:
+      defaultClass: {{ storage_class }}
+    network:
+      cni:
+        name: antrea

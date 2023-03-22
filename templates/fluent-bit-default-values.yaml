@@ -1,0 +1,8 @@
+fluent_bit:
+  config:
+    filters: default kubernetes filter
+    inputs: tail
+    outputs: standard output
+    parsers: json parser
+    service: default fluent-bit service config.
+namespace: tanzu-system-logging
